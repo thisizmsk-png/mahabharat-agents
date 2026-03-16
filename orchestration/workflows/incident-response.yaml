@@ -1,0 +1,56 @@
+# Incident Response Workflow
+# Topology: Rajya (Hierarchical) — escalation-driven
+
+name: incident-response
+description: "Structured incident response with hierarchical escalation"
+topology: rajya
+
+severity_levels:
+  SEV1:
+    description: "Service down, data loss, or security breach"
+    response_time: "5 minutes"
+    escalation: [ashwatthama, hanuman, bhishma, yudhishthira, krishna]
+    war_room: true
+  SEV2:
+    description: "Degraded service, significant impact"
+    response_time: "15 minutes"
+    escalation: [ashwatthama, hanuman, arjuna]
+  SEV3:
+    description: "Minor issue, workaround available"
+    response_time: "1 hour"
+    escalation: [ashwatthama, hanuman]
+
+phases:
+  - name: detect_and_triage
+    agent: ashwatthama
+    description: "First responder — assess severity and impact"
+    skills: [incident-response]
+
+  - name: contain
+    agents: [ashwatthama, hanuman]
+    description: "Stop the bleeding — rollback, feature flag, traffic redirect"
+    skills: [incident-response, ci-cd]
+
+  - name: diagnose
+    agents: [bhima, arjuna]
+    description: "Find root cause — code, infrastructure, or external"
+    escalation_condition: "root_cause unclear after 30 minutes"
+    escalate_to: yudhishthira
+
+  - name: recover
+    agents: [hanuman, bhima]
+    description: "Implement fix, verify recovery"
+    skills: [ci-cd]
+
+  - name: postmortem
+    agents: [ashwatthama, arjuna]
+    description: "Blameless postmortem within 24 hours"
+    skills: [incident-response]
+    artifact_out: PostmortemReport
+
+guardrails:
+  zero_cognitive_bias: true
+  blameless: true
+  communicate_every_15_minutes: true
+  postmortem_required: true
+  action_items_required: true

@@ -1,0 +1,46 @@
+# Sabha (Council) — Debate / MixtureOfAgents
+# Use for: Consensus decisions, design reviews, risk assessments
+# Examples: Architecture debate, feature prioritization, go/no-go decisions
+
+name: sabha
+type: mixture_of_agents
+description: >
+  Multiple agents evaluate the same input independently, then a moderator
+  synthesizes their perspectives into a consensus decision.
+  Named after the royal assembly hall where the Pandavas held council.
+
+execution:
+  mode: parallel_then_synthesize
+  min_participants: 3
+  max_rounds: 3  # Max debate rounds before CEO tiebreak
+  consensus_threshold: 0.7  # 70% agreement = consensus
+
+roles:
+  participants:
+    description: "Agents who independently evaluate and provide their perspective"
+    min: 3
+    max: 7
+  moderator:
+    description: "Agent who synthesizes perspectives and drives toward consensus"
+    default: yudhishthira  # CTO moderates technical debates
+  tiebreaker:
+    description: "Agent who decides when consensus cannot be reached"
+    default: krishna  # CEO is the final tiebreaker
+
+debate_protocol:
+  round_1:
+    action: "Each participant independently evaluates the input"
+    output: "Individual assessment with confidence score and reasoning"
+  round_2:
+    action: "Participants review others' assessments and respond"
+    output: "Updated assessment incorporating counter-arguments"
+  round_3:
+    action: "Moderator synthesizes and proposes final decision"
+    output: "Consensus decision or escalation to tiebreaker"
+
+guardrails:
+  zero_cognitive_bias: true
+  five_question_framework: true
+  no_groupthink: true  # Participants must submit BEFORE seeing others
+  adversarial_required: true  # At least one participant must play devil's advocate
+  ceo_override: krishna

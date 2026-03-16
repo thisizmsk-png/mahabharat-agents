@@ -1,0 +1,74 @@
+# Performance Review Workflow
+# Topology: Sabha (Debate) — peer review of agent performance
+# Run periodically (weekly/monthly) to improve every agent
+
+name: performance-review
+description: "Peer feedback loop — agents review each other's performance and improve"
+topology: sabha
+
+trigger:
+  schedule: "weekly"  # or after major milestones
+  can_be_manual: true
+
+phases:
+  - name: self_assessment
+    description: "Each agent assesses their own performance"
+    participants: all_masters
+    artifact_out: SelfAssessment
+    template:
+      what_went_well: "Top 3 contributions this cycle"
+      what_could_improve: "Top 3 areas for growth"
+      skills_used: "Which skills were most/least effective"
+      decisions_made: "Key decisions and their outcomes"
+      bias_checks: "Cognitive biases I caught (or missed)"
+
+  - name: peer_feedback
+    description: "Agents review peers they collaborated with"
+    topology_override: akshauhini  # Parallel — each agent reviews independently
+    rules:
+      - "Only review agents you directly collaborated with"
+      - "Feedback must be specific, evidence-based, constructive"
+      - "Include at least one strength and one growth area"
+    artifact_out: PeerFeedback
+    template:
+      agent_reviewed: "{agent_name}"
+      reviewer: "{my_name}"
+      collaboration_context: "What we worked on together"
+      strengths: "What they did well (with specific examples)"
+      growth_areas: "Where they could improve (with specific suggestions)"
+      authority_adherence: "Did they stay within their role boundaries?"
+      bias_observations: "Any cognitive bias patterns noticed?"
+      overall_rating: "1-5 scale"
+
+  - name: 360_synthesis
+    description: "Krishna synthesizes all feedback into agent improvement plans"
+    agent: krishna
+    artifact_in: [SelfAssessment, PeerFeedback]
+    artifact_out: PerformanceReport
+    template:
+      agent: "{agent_name}"
+      overall_score: "Weighted average from peers"
+      top_strengths: "Consensus strengths from multiple reviewers"
+      improvement_areas: "Consensus growth areas"
+      action_items: "Specific changes to make in next cycle"
+      promotion_consideration: "Ready for expanded authority? (sepoy → master potential)"
+      demotion_consideration: "Authority should be reduced? (with evidence)"
+
+  - name: agent_update
+    description: "Update agent definitions based on feedback"
+    agent: krishna
+    artifact_in: PerformanceReport
+    actions:
+      - "Update agent's Karma section with refined goals"
+      - "Adjust skill assignments based on performance"
+      - "Update guardrails based on observed failure patterns"
+      - "Promote high-performing sepoys"
+      - "Add new traits/principles learned from this cycle"
+      - "Log the review in itihasa/performance/"
+
+guardrails:
+  zero_cognitive_bias: true
+  feedback_must_be_evidence_based: true
+  blameless: true  # Growth-oriented, not punitive
+  anonymous_peer_feedback: false  # Accountability over anonymity
+  minimum_feedback_per_agent: 2  # At least 2 peer reviews

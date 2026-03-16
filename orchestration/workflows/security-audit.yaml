@@ -1,0 +1,48 @@
+# Security Audit Workflow
+# Topology: Akshauhini (Parallel) + Vyuha (Sequential reporting)
+
+name: security-audit
+description: "Comprehensive security audit with parallel testing and consolidated report"
+topology: akshauhini
+
+phases:
+  - name: scope_definition
+    agents: [bhishma, yudhishthira]
+    description: "Define audit scope, assets, and threat model"
+    artifact_out: AuditScope
+    skills: [threat-modeling, research]
+
+  - name: parallel_testing
+    topology_override: akshauhini
+    coordinator: bhishma
+    workers:
+      - agent: shakuni
+        task: "Penetration testing — external attack surface"
+        skills: [threat-modeling]
+      - agent: vidura
+        task: "Code security review — OWASP Top 10"
+        skills: [code-review, testing]
+      - agent: duryodhana
+        task: "Adversarial testing — business logic exploits"
+        skills: [threat-modeling]
+    artifact_in: AuditScope
+    artifact_out: TestingResults
+
+  - name: consolidation
+    agents: [bhishma]
+    description: "Consolidate findings into audit report with risk scores"
+    artifact_in: TestingResults
+    artifact_out: SecurityAuditReport
+
+  - name: remediation_planning
+    agents: [bhishma, arjuna]
+    description: "Plan remediation for findings"
+    artifact_in: SecurityAuditReport
+    artifact_out: RemediationPlan
+    requires_approval: true
+    approver: yudhishthira
+
+guardrails:
+  zero_cognitive_bias: true
+  all_critical_findings_must_have_remediation: true
+  report_to_ceo: true

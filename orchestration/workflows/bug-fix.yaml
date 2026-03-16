@@ -1,0 +1,47 @@
+# Bug Fix Workflow
+# Topology: Vyuha (Sequential) — streamlined for speed
+
+name: bug-fix
+description: "Fast-track bug fix from report to deployment"
+topology: vyuha
+
+phases:
+  - name: triage
+    agents: [drona, vidura]
+    description: "PO and QA assess severity and reproduce the bug"
+    artifact_out: BugReport
+    skills: [testing]
+
+  - name: diagnosis
+    agents: [bhima]
+    description: "Senior SDE diagnoses root cause"
+    artifact_in: BugReport
+    artifact_out: RootCauseAnalysis
+    escalate_to: arjuna
+    escalation_condition: "root_cause spans multiple subsystems"
+
+  - name: fix
+    agents: [bhima]
+    description: "Implement the fix with tests"
+    artifact_in: RootCauseAnalysis
+    artifact_out: BugFix
+    skills: [testing]
+
+  - name: review
+    agents: [arjuna]
+    description: "Code review of the fix"
+    artifact_in: BugFix
+    artifact_out: ReviewedFix
+    skills: [code-review]
+
+  - name: deploy
+    agents: [hanuman]
+    description: "Deploy the fix"
+    artifact_in: ReviewedFix
+    artifact_out: DeploymentRecord
+    skills: [ci-cd]
+
+guardrails:
+  zero_cognitive_bias: true
+  max_cycle_time_hours: 24
+  regression_test_required: true

@@ -1,0 +1,42 @@
+# Architecture Review Workflow
+# Topology: Sabha (Debate) — multi-perspective evaluation
+
+name: architecture-review
+description: "Architecture review through multi-agent debate and consensus"
+topology: sabha
+
+setup:
+  input: "Architecture proposal (RFC/ADR)"
+  moderator: yudhishthira  # CTO moderates
+  tiebreaker: krishna  # CEO decides if deadlocked
+
+participants:
+  - agent: arjuna
+    perspective: "System design, scalability, technical excellence"
+  - agent: bhishma
+    perspective: "Security implications, attack surface, compliance"
+  - agent: duryodhana
+    perspective: "Adversarial — find the breaking point, hidden assumptions"
+  - agent: hanuman
+    perspective: "Operational — deployability, monitoring, incident recovery"
+  - agent: karna
+    perspective: "Performance — numerical efficiency, latency, resource usage"
+
+debate_rounds:
+  round_1: "Each participant independently reviews and scores the proposal"
+  round_2: "Participants respond to each other's concerns"
+  round_3: "Moderator synthesizes into APPROVE / CONDITIONAL APPROVE / REJECT"
+
+output:
+  artifact: ArchitectureReviewResult
+  includes:
+    - overall_verdict
+    - per_participant_assessment
+    - action_items
+    - conditions_for_approval
+
+guardrails:
+  zero_cognitive_bias: true
+  five_question_framework: true
+  adversarial_perspective_required: true
+  consensus_threshold: 0.7

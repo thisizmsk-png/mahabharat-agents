@@ -1,0 +1,47 @@
+# Akshauhini (Army Division) — Parallel Fork-Join
+# Use for: Independent parallel tasks that merge into a single result
+# Examples: Multiple sepoys implementing different modules, parallel research
+
+name: akshauhini
+type: parallel
+description: >
+  Multiple agents work on independent tasks simultaneously, then results
+  are merged by a coordinator. Named after the army divisions in the
+  Mahabharata war — 18 akshauhinis fought simultaneously.
+
+execution:
+  mode: fork_join
+  max_parallel: 10
+  timeout_per_task_minutes: 30
+  merge_timeout_minutes: 15
+
+roles:
+  coordinator:
+    description: "Agent who distributes tasks and merges results"
+    default: dhrishtadyumna  # Program Manager coordinates
+  workers:
+    description: "Agents who execute tasks in parallel"
+    min: 2
+    max: 10
+
+workflow:
+  fork:
+    action: "Coordinator distributes independent tasks to workers"
+    output: "Task assignments with clear scope and acceptance criteria"
+  execute:
+    action: "Workers execute tasks independently and simultaneously"
+    output: "Individual task artifacts"
+  join:
+    action: "Coordinator collects results and merges into unified output"
+    output: "Merged artifact with consistency verification"
+
+merge_rules:
+  conflict_handling: "Coordinator resolves, escalates to Arjuna if technical"
+  quality_gate: "Vidura (QA) reviews merged output before accepting"
+  consistency_check: "Verify no contradictions between parallel outputs"
+
+guardrails:
+  zero_cognitive_bias: true
+  independent_tasks_only: true  # Tasks must be truly independent
+  no_shared_state: true  # Workers cannot modify shared resources
+  ceo_override: krishna

@@ -1,0 +1,45 @@
+# Rajya (Kingdom) — Hierarchical Governance
+# Use for: Approval chains, governance, escalation paths
+# Examples: Deploy approvals, security sign-off, budget allocation
+
+name: rajya
+type: hierarchical
+description: >
+  Hierarchical approval chain where decisions flow up through the
+  organizational hierarchy until an agent with sufficient authority approves.
+  Named after the kingdom governance structure of the Mahabharata.
+
+execution:
+  mode: hierarchical
+  direction: bottom_up  # Request flows up until approved
+  auto_approve_below_threshold: true  # Low-risk items auto-approved
+
+hierarchy:
+  god:
+    agent: krishna
+    authority: "ALL — ultimate override"
+  c_suite:
+    agents: [yudhishthira, draupadi]
+    authority: "Architecture, product direction, resource allocation"
+  masters:
+    agents: [arjuna, bhima, nakula, karna, bhishma, hanuman, vidura, duryodhana]
+    authority: "Domain-specific decisions within their role"
+  sepoys:
+    agents: ["sepoy-*"]
+    authority: "Implementation within assigned tasks"
+
+escalation_rules:
+  - condition: "Decision outside agent's authority matrix"
+    action: "Escalate to reports_to agent"
+  - condition: "Disagreement between same-level agents"
+    action: "Escalate to shared superior"
+  - condition: "Security concern"
+    action: "Escalate to bhishma regardless of hierarchy"
+  - condition: "Deadlock after 3 escalation rounds"
+    action: "Escalate to krishna for final decision"
+
+guardrails:
+  zero_cognitive_bias: true
+  authority_enforcement: true  # Agents cannot exceed their authority
+  audit_trail: true  # Every approval/rejection logged with reasoning
+  ceo_override: krishna
