@@ -1,0 +1,34 @@
+# Roster manifest: the agents this repo installs (mahabharat.roster/v1).
+#
+# Every agent file under agents/ must be listed here, and every entry here must
+# exist. tests/test_agents.py enforces that; scripts/install.sh, install.sh and
+# the mahabharat-install CLI install exactly these files, flat, as <name>.md.
+#
+# Format rule: keep ONE flow mapping per line ({name, file, rank}). The shell
+# installer parses this file without a YAML library, and a test checks that
+# its line parser and PyYAML agree.
+#
+# Adding an agent: add its file, add one line here, and add it to krishna's
+# Agent(...) list. Templates live in templates/ and are never installed.
+spec: mahabharat.roster/v1
+agents:
+  - {name: krishna, file: agents/masters/krishna.md, rank: god}
+  - {name: yudhishthira, file: agents/masters/yudhishthira.md, rank: master}
+  - {name: arjuna, file: agents/masters/arjuna.md, rank: master}
+  - {name: bhima, file: agents/masters/bhima.md, rank: master}
+  - {name: nakula, file: agents/masters/nakula.md, rank: master}
+  - {name: abhimanyu, file: agents/masters/abhimanyu.md, rank: master}
+  - {name: karna, file: agents/masters/karna.md, rank: master}
+  - {name: sahadeva, file: agents/masters/sahadeva.md, rank: master}
+  - {name: vidura, file: agents/masters/vidura.md, rank: master}
+  - {name: bhishma, file: agents/masters/bhishma.md, rank: master}
+  - {name: shakuni, file: agents/masters/shakuni.md, rank: master}
+  - {name: duryodhana, file: agents/masters/duryodhana.md, rank: master}
+  - {name: hanuman, file: agents/masters/hanuman.md, rank: master}
+  - {name: ashwatthama, file: agents/masters/ashwatthama.md, rank: master}
+  - {name: draupadi, file: agents/masters/draupadi.md, rank: master}
+  - {name: drona, file: agents/masters/drona.md, rank: master}
+  - {name: dhrishtadyumna, file: agents/masters/dhrishtadyumna.md, rank: master}
+  - {name: sepoy-backend-1, file: agents/sepoys/examples/backend-dev-1.md, rank: sepoy}
+  - {name: sepoy-frontend-1, file: agents/sepoys/examples/frontend-dev-1.md, rank: sepoy}
+  - {name: sepoy-test-1, file: agents/sepoys/examples/test-engineer-1.md, rank: sepoy}
