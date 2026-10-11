@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/thisizmsk-png/mahabharat-agents/spec/mahabharat.agent.v1.schema.json",
+  "title": "mahabharat.agent/v1 frontmatter",
+  "description": "YAML frontmatter of one mahabharat agent file (a Claude Code subagent .md). Claude-native keys stay at the top level; all org data lives in the x-mahabharat block, which Claude Code ignores and pytest validates. See docs/upgrading-to-v1.md and docs/getting-started.md (Adding Agents).",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "tools",
+    "model",
+    "effort",
+    "x-mahabharat"
+  ],
+  "properties": {
+    "name": {
+      "description": "Agent slug. Lowercase, digits and hyphens; no ':' (plugin namespaces are added by Claude Code).",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "description": {
+      "description": "One line: '<delivers>. Use when <trigger>. Not for <neighbor> (use <agent>).' Names only installed agents.",
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 300,
+      "pattern": "^[^\\r\\n]*$"
+    },
+    "tools": {
+      "description": "Explicit tool allowlist, the only tool restriction Claude Code enforces for agents. Comma-separated string or a list. A bare '*' item is rejected: Claude Code treats it as a wildcard for every tool.",
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!\\s*\\*\\s*(,|$))(?!.*,\\s*\\*\\s*(,|$))[^\\r\\n]*$"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "not": {
+            "contains": {
+              "type": "string",
+              "pattern": "^\\s*\\*\\s*$"
+            }
+          }
+        }
+      ]
+    },
+    "model": {
+      "description": "A model alias, never a model id.",
+      "enum": [
+        "opus",
+        "sonnet",
+        "haiku",
+        "inherit"
+      ]
+    },
+    "effort": {
+      "description": "Explicit effort. Claude Code silently drops an invalid value (DEBUG line only).",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ]
+    },
+    "maxTurns": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "color": {
+      "enum": [
+        "red",
+        "blue",
+        "green",
+        "yellow",
+        "purple",
+        "orange",
+        "pink",
+        "cyan"
+      ]
+    },
+    "skills": {
+      "description": "Allowed but unused in v1: preloads each skill's full content on every spawn. The retired zero-bias skill is never preloaded.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "not": {
+          "pattern": "(^|:)zero-bias$"
+        }
+      }
+    },
+    "isolation": {
+      "description": "Allowed but unused in v1.",
+      "enum": [
+        "worktree"
+      ]
+    },
+    "disallowedTools": {
+      "description": "Allowed but unused in v1.",
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\r\\n]*$"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "memory": {
+      "description": "Allowed but unused in v1 (decision 12).",
+      "enum": [
+        "user",
+        "project",
+        "local"
+      ]
+    },
+    "x-mahabharat": {
+      "$ref": "#/$defs/xMahabharat"
+    }
+  },
+  "additionalProperties": false,
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "allowed-tools"
+        ]
+      },
+      {
+        "required": [
+          "role"
+        ]
+      },
+      {
+        "required": [
+          "character"
+        ]
+      },
+      {
+        "required": [
+          "rank"
+        ]
+      },
+      {
+        "required": [
+          "reports_to"
+        ]
+      },
+      {
+        "required": [
+          "master"
+        ]
+      },
+      {
+        "required": [
+          "permissionMode"
+        ]
+      },
+      {
+        "required": [
+          "hooks"
+        ]
+      },
+      {
+        "required": [
+          "mcpServers"
+        ]
+      },
+      {
+        "required": [
+          "initialPrompt"
+        ]
+      }
+    ]
+  },
+  "$comment": "Top-level keys are a whitelist: the Claude-native keys in properties, the allowed-but-unused skills/isolation/disallowedTools/memory, and x-mahabharat. Forbidden top-level keys, named in the 'not' block for a clear message: allowed-tools (ignored by Claude Code for agents, so the agent silently gets every tool); role/character/rank/reports_to/master (org data belongs in x-mahabharat); permissionMode/hooks/mcpServers/initialPrompt (never set in v1, see plan section 3.1).",
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "xMahabharat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "spec",
+        "character",
+        "title",
+        "rank",
+        "reports_to"
+      ],
+      "properties": {
+        "spec": {
+          "const": "mahabharat.agent/v1"
+        },
+        "character": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rank": {
+          "enum": [
+            "god",
+            "master",
+            "sepoy"
+          ]
+        },
+        "reports_to": {
+          "description": "The agent this one answers to for review and escalation; null only for krishna (rank god). The human owner is above everyone and is not an agent.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/slug"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "master": {
+          "description": "Sepoys only: the master whose role the sepoy inherits.",
+          "$ref": "#/$defs/slug"
+        },
+        "owns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "escalates": {
+          "description": "topic -> agent name.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "rank": {
+                "const": "sepoy"
+              }
+            },
+            "required": [
+              "rank"
+            ]
+          },
+          "then": {
+            "required": [
+              "master"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "master"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "rank": {
+                "const": "god"
+              }
+            },
+            "required": [
+              "rank"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reports_to": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reports_to": {
+                "$ref": "#/$defs/slug"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

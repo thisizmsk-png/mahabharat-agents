@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+# Read-only token: no job here needs to write to the repository.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -15,6 +19,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -60,37 +66,30 @@ jobs:
               print('\nAll YAML files valid.')
           "
 
-      - name: Validate agent markdown frontmatter
-        run: |
-          python -c "
-          import pathlib, sys, re
-
-          REQUIRED_FIELDS = ['name', 'role', 'model', 'character', 'rank']
-          errors = []
-          agents_dir = pathlib.Path('agents/masters')
-          if not agents_dir.exists():
-              print('No agents/masters/ directory found, skipping frontmatter validation.')
-              sys.exit(0)
-
-          for f in sorted(agents_dir.rglob('*.md')):
-              content = f.read_text()
-              match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
-              if not match:
-                  errors.append(f'{f}: missing YAML frontmatter')
-                  continue
-              frontmatter = match.group(1)
-              for field in REQUIRED_FIELDS:
-                  if not re.search(rf'^{field}\s*:', frontmatter, re.MULTILINE):
-                      errors.append(f'{f}: missing required field \"{field}\"')
-
-          if errors:
-              print('Agent frontmatter validation failures:')
-              for err in errors:
-                  print(f'  - {err}')
-              sys.exit(1)
-          else:
-              print('All agent markdown files have valid frontmatter.')
-          "
-
+      # Agent frontmatter, the x-mahabharat schema and the roster manifest are
+      # validated by tests/test_agents.py (spec/mahabharat.agent.v1.schema.json).
       - name: Run tests
         run: pytest
+
+  smoke:
+    # Stage 0 smoke test: real Claude Code CLI, no credentials, $0. It stops at
+    # "Not logged in" after emitting system/init and the agent-parse debug lines.
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pinned Claude Code CLI
+        # Pinned to the version the plan's spike verified; bump deliberately.
+        run: npm install -g @anthropic-ai/claude-code@2.1.295
+
+      - name: Smoke test (fixture project, scripts/install.sh --from HEAD)
+        env:
+          CLAUDE_BIN: claude
+        run: scripts/smoke.sh

@@ -81,6 +81,6 @@ genuinely influences its behavior and judgment.
 
 ## Created By
 
-**Sai Krishna Madavarapu** ([@saikrishnamadavarapu](https://github.com/saikrishnamadavarapu))
+**Sai Krishna Madavarapu** ([@thisizmsk-png](https://github.com/thisizmsk-png)) · [github.com/thisizmsk-png/mahabharat-agents](https://github.com/thisizmsk-png/mahabharat-agents)
 
 Built with Claude Code (Anthropic) using spec-driven development.

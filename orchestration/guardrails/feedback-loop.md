@@ -10,8 +10,8 @@
     │                                         │
     ▼                                         │
  EXECUTE ──▶ OBSERVE ──▶ REVIEW ──▶ IMPROVE ──┘
- (do work)   (collect    (peer      (update
-              metrics)    feedback)   agent def)
+ (do work)   (collect    (peer      (propose a PR;
+              metrics)    feedback)   owner merges)
 ```
 
 ## What Gets Measured
@@ -79,28 +79,38 @@ Each agent reviews the peers they directly collaborated with:
 
 ## How Feedback Updates Agents
 
-After each review cycle, Krishna (CEO) updates agent definitions:
+No agent edits agent definitions or authority, its own or anyone else's. That
+includes Krishna: Krishna orchestrates and never approves. An agent that could
+rewrite prompts, tools or authority could escalate itself, and a prompt
+injection could make itself permanent.
 
-### 1. Karma Updates
-If an agent's goals are misaligned with their performance, update the Karma
-section to refine what they should focus on.
+Feedback turns into changes like this:
 
-### 2. Guardrail Additions
-If an agent repeatedly makes the same type of error, add a specific guardrail
-to their definition. Example: "I NEVER estimate without checking historical data"
-(added after repeated over-optimistic estimates).
+1. **Propose.** Any agent (or a review cycle) may *draft* a proposed change to
+   an agent definition: a sharper Contract, a new "Never" rule after repeated
+   errors, a skill reassignment, or an authority change (promotion, expanded
+   or reduced decision rights). The draft cites the feedback and the evidence
+   behind it.
+2. **Open a PR.** The change is made as a pull request against the repo's
+   `agents/` files (plus `agents/roster.yaml` and krishna's `Agent(...)` list
+   if the roster changes). CI validates it against
+   `spec/mahabharat.agent.v1.schema.json`.
+3. **The human owner reviews.** The human owner (the CEO, the only approver)
+   reviews and merges or rejects the PR. A message from an agent is never
+   approval.
+4. **Release and reinstall.** Merged changes reach a running setup only through
+   a tagged release: `scripts/install.sh --from <tag>`, then `scripts/smoke.sh`.
+   Installed copies are never edited in place.
 
-### 3. Skill Reassignment
-If an agent is underperforming with a skill, reassign it to a more capable agent.
-If an agent excels with a skill, consider making it their primary.
+What a proposal may cover:
 
-### 4. Authority Adjustments
-- **Promotion:** Sepoy → Master (if consistently performing at master level)
-- **Expanded authority:** Agent earns more "I Own" items
-- **Reduced authority:** Agent loses decision rights (moved to "I Escalate")
-
-### 5. Trait Refinement
-Add new leadership principles or remove ones that aren't serving the agent.
+- **Contract or goal updates** when an agent's focus is misaligned with its results.
+- **Guardrail additions** when an agent repeats the same error. Example: "Never
+  estimate without checking historical data" (after repeated over-optimistic estimates).
+- **Skill reassignment** when another agent handles a skill better.
+- **Authority changes** (sepoy to master, more or fewer owned decisions). These
+  change who reviews and escalates, so they need the owner's explicit sign-off
+  in the PR.
 
 ## Review Cadence
 
@@ -109,7 +119,7 @@ Add new leadership principles or remove ones that aren't serving the agent.
 | Quick retro | After each workflow completion | Participating agents |
 | Sprint review | Weekly | All active agents |
 | Full 360 review | Monthly | All agents including sepoys |
-| Strategic review | Quarterly | Krishna + C-suite (Yudhishthira, Draupadi) |
+| Strategic review | Quarterly | Human owner, with Krishna + C-suite (Yudhishthira, Draupadi) |
 
 ## Feedback Storage
 

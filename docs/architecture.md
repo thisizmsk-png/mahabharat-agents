@@ -10,6 +10,13 @@ FAANG-level job definitions stored in `roles/*.md`. Each role defines:
 
 Roles are generic — they work for any software project.
 
+Roles are background reading only. They are not installed, and agents don't link to
+them. Their authority lines (for example "Ultimate authority" in `roles/ceo.md`, or
+go/no-go in the PM and QA roles) predate v1. In v1 the human owner is the CEO and the
+only approver of protected actions (push, PR, deploy, migrations, destructive data
+operations, secrets, spend, external messages). Krishna orchestrates and never
+approves. Where a role file disagrees, the agent file wins.
+
 ### 2. Agents (DKK Format)
 Mahabharata-named entities stored in `agents/masters/*.md`. Each agent has:
 - **Dharma** (Role & Duty) — What they do, from their role definition
@@ -22,7 +29,7 @@ Mahabharata-named entities stored in `agents/masters/*.md`. Each agent has:
 
 ### 3. Skills (SKILL.md Format)
 Claude Code skills stored in `skills/`. Two types:
-- **Shared** — Available to multiple roles (HLD, LLD, code-review, testing, research, spec, zero-bias)
+- **Shared** — Available to multiple roles (HLD, LLD, code-review, testing, research, spec; the old zero-bias skill is retired and not installed)
 - **Role-specific** — Tied to specific roles (product-spec, threat-modeling, incident-response, etc.)
 
 ### 4. Orchestration Topologies
@@ -35,6 +42,12 @@ Five coordination patterns stored in `orchestration/topologies/`:
 | Hierarchical | **Rajya** | Approval chain: bottom-up |
 | Graph DAG | **Chakravyuha** | Complex dependencies |
 | Fork-Join | **Akshauhini** | Parallel tasks → merge |
+
+Like roles, `orchestration/` (topologies, workflows, guardrails) and `context/` are
+design notes in the repo. v1 does not install them: they predate the owner-only
+approval model (some name krishna as `approver` or `ceo_override`, or allow
+auto-approval and rollback without approval). Where they disagree with an agent file,
+the agent file wins. They return, rewritten, with saved workflows.
 
 ### 5. Master/Sepoy Hierarchy
 - **Masters** — Named Mahabharata characters with full role authority
@@ -49,7 +62,9 @@ Three-tier context management inspired by OpenViking:
 ## Data Flow
 
 ```
-Krishna (God) sets direction
+The human owner (CEO) sets direction and approves protected actions
+    ↓
+Krishna plans and delegates
     ↓
 Orchestration Engine selects topology
     ↓
@@ -68,6 +83,6 @@ Decision audit log captures everything
 2. **Role-Goal-Backstory trinity** — Expressive agent definition (CrewAI → DKK)
 3. **Multi-topology orchestration** — Right pattern for right task (Swarms)
 4. **Tiered context** — Efficient memory management (OpenViking)
-5. **Zero Cognitive Bias** — Mandatory for ALL agents, ALL decisions
+5. **Owner-only approval** — Protected actions are approved only by the human owner, through Claude Code's permission prompt
 6. **Authority boundaries** — Agents can't exceed their role
 7. **Adversarial review** — Duryodhana challenges everything before shipping

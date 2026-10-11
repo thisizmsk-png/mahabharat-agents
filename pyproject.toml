@@ -30,12 +30,16 @@ classifiers = [
 dev = [
     "pytest>=7.0",
     "pyyaml>=6.0",
+    "jsonschema>=4.18",
 ]
 
 [project.urls]
 Homepage = "https://github.com/thisizmsk-png/mahabharat-agents"
 Repository = "https://github.com/thisizmsk-png/mahabharat-agents"
 Issues = "https://github.com/thisizmsk-png/mahabharat-agents/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [project.scripts]
 mahabharat-install = "mahabharat_agents.cli:install"
@@ -47,8 +51,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/mahabharat_agents"]
 
+# Only installable content is bundled. agents/ holds roster.yaml plus the agent
+# files it lists; the sepoy template lives in templates/ and is never bundled or installed.
+# orchestration/ and context/ are not bundled: those pre-v1 docs predate the owner-only
+# approval model, and the CLI no longer installs them.
 [tool.hatch.build.targets.wheel.force-include]
 "agents" = "mahabharat_agents/data/agents"
 "skills" = "mahabharat_agents/data/skills"
-"orchestration" = "mahabharat_agents/data/orchestration"
-"context" = "mahabharat_agents/data/context"
