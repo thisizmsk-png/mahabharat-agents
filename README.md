@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/mahabharat-agents/"><img src="https://img.shields.io/pypi/v/mahabharat-agents.svg" alt="PyPI version"></a>
+  <a href="https://github.com/thisizmsk-png/mahabharat-agents/releases"><img src="https://img.shields.io/github/v/release/thisizmsk-png/mahabharat-agents" alt="Latest release"></a>
   <a href="https://github.com/thisizmsk-png/mahabharat-agents/actions"><img src="https://github.com/thisizmsk-png/mahabharat-agents/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/thisizmsk-png/mahabharat-agents/stargazers"><img src="https://img.shields.io/github/stars/thisizmsk-png/mahabharat-agents?style=social" alt="GitHub Stars"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
@@ -30,16 +30,18 @@ Deploy **17 FAANG-level AI agents** into any project with a single command. Each
 ## Install
 
 ```bash
-pip install mahabharat-agents
+pip install "git+https://github.com/thisizmsk-png/mahabharat-agents@v0.1.1"
 mahabharat-install .
 ```
+
+> **Note:** install from GitHub for now. The PyPI package is stuck at 0.1.0 (pre-v1 agents that Claude Code doesn't load) until PyPI account access is restored; `pip install mahabharat-agents` will return once 0.1.1 is published there. Release files are also on the [GitHub release](https://github.com/thisizmsk-png/mahabharat-agents/releases/tag/v0.1.1).
 
 That's it. Agents and skills are copied into your `.claude/` directory. Claude Code picks them up automatically. Start the orchestrator as the main session with `claude --agent krishna`.
 
 > **macOS Homebrew users:** If you get `externally-managed-environment`, use `pipx`:
 > ```bash
 > brew install pipx
-> pipx install mahabharat-agents
+> pipx install "git+https://github.com/thisizmsk-png/mahabharat-agents@v0.1.1"
 > mahabharat-install .
 > ```
 
