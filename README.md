@@ -38,7 +38,7 @@ mahabharat-install .
 
 That's it. Agents and skills are copied into your `.claude/` directory. Claude Code picks them up automatically. Start the orchestrator as the main session with `claude --agent krishna`.
 
-> **macOS Homebrew users:** If you get `externally-managed-environment`, use `pipx`:
+> **macOS:** if you get `command not found: pip` or `externally-managed-environment`, use `pipx`:
 > ```bash
 > brew install pipx
 > pipx install "git+https://github.com/thisizmsk-png/mahabharat-agents@v0.1.1"
